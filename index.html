@@ -3,107 +3,213 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BM PH CS Interview Portal</title>
+<title>Assessment Portal | PH CS Recruitment</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  /* --- BASE STYLES & VERSANT-STYLE LIGHT THEME --- */
   * { box-sizing: border-box; }
-  body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); color: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-  .container { background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); max-width: 560px; width: 100%; text-align: center; }
-  h1 { font-size: 26px; margin-bottom: 12px; color: #0f172a; font-weight: 700; }
-  p { color: #475569; font-size: 15px; margin-bottom: 18px; line-height: 1.6; }
-  input { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; margin-bottom: 12px; transition: border-color 0.3s; font-family: 'DM Sans', sans-serif; }
-  input:focus { outline: none; border-color: #6366f1; }
-  .btn { background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); color: white; border: none; padding: 15px 24px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(79,70,229,0.3); font-family: 'DM Sans', sans-serif; }
-  .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79,70,229,0.4); }
-  .btn:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
-  .error-msg { color: #ef4444; font-size: 13px; font-weight: 600; margin-top: 8px; display: none; background: #fef2f2; padding: 10px 14px; border-radius: 8px; border: 1px solid #fecaca; text-align: left; }
-  .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-align: left; font-size: 14px; color: #1d4ed8; line-height: 1.6; }
-  .warn-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-align: left; font-size: 14px; color: #92400e; line-height: 1.6; }
-  #question-box { font-size: 20px; font-weight: 700; color: #1e40af; margin: 20px 0; min-height: 65px; line-height: 1.45; }
-  #recording-status { color: #ef4444; font-weight: 700; font-size: 14px; margin-bottom: 16px; animation: pulse 1.5s infinite; display: none; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  #live-transcript { background: #f8fafc; padding: 18px; border-radius: 12px; font-size: 14px; color: #64748b; min-height: 90px; text-align: left; border: 1px solid #e2e8f0; margin-bottom: 20px; line-height: 1.7; }
-  .tip-text { font-size: 12px; color: #94a3b8; margin-top: -12px; margin-bottom: 18px; font-style: italic; }
+  body { 
+    font-family: 'DM Sans', sans-serif; 
+    background: #f1f5f9; 
+    color: #1e293b; 
+    display: flex; justify-content: center; align-items: center; 
+    min-height: 100vh; margin: 0; padding: 20px; 
+  }
+  
+  .container { 
+    background: #ffffff; padding: 40px; border-radius: 8px; 
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05); 
+    max-width: 580px; width: 100%; text-align: center; 
+    border-top: 5px solid #2563eb; 
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  h1 { font-size: 24px; margin-bottom: 12px; color: #0f172a; font-weight: 700; letter-spacing: -0.5px; }
+  p { color: #475569; font-size: 15px; margin-bottom: 20px; line-height: 1.6; }
+  
+  /* --- INPUTS & BUTTONS --- */
+  input[type="text"] { 
+    width: 100%; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 6px; 
+    font-size: 15px; margin-bottom: 16px; transition: all 0.2s; 
+    font-family: 'DM Sans', sans-serif; background: #f8fafc;
+  }
+  input[type="text"]:focus { outline: none; border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+  
+  .btn { 
+    background: #2563eb; color: white; border: none; padding: 16px 24px; 
+    border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; 
+    width: 100%; transition: all 0.2s ease; font-family: 'DM Sans', sans-serif; 
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .btn:hover:not(:disabled) { background: #1d4ed8; }
+  .btn:disabled { background: #cbd5e1; cursor: not-allowed; color: #94a3b8; }
+  
+  /* --- ALERTS & BOXES --- */
+  .error-msg { color: #b91c1c; font-size: 13px; font-weight: 600; margin-top: 10px; display: none; background: #fef2f2; padding: 12px; border-radius: 6px; border: 1px solid #fecaca; text-align: left; }
+  .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 16px; margin-bottom: 20px; text-align: left; font-size: 14px; color: #1e40af; line-height: 1.6; }
+  
+  /* --- INTERACTIVE CHECKLIST --- */
+  .checklist-group { text-align: left; margin-bottom: 24px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 6px; }
+  .checklist-title { font-weight: 700; color: #0f172a; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;}
+  .check-label { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; font-size: 14px; color: #334155; cursor: pointer; line-height: 1.4; }
+  .check-label input[type="checkbox"] { margin-top: 3px; width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer; flex-shrink: 0; }
+  .check-label:last-child { margin-bottom: 0; }
+
+  /* --- INTERVIEW UI --- */
+  .step-badge { display: inline-block; background: #e2e8f0; color: #475569; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 4px; margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase; }
+  .progress-bar-wrap { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
+  .progress-bar { height: 100%; background: #2563eb; border-radius: 3px; transition: width 0.4s ease; }
+  
+  #question-box { font-size: 22px; font-weight: 700; color: #0f172a; margin: 24px 0; min-height: 80px; line-height: 1.4; text-align: left; }
+  
+  #recording-status { color: #dc2626; font-weight: 700; font-size: 14px; margin-bottom: 16px; animation: pulse 1.5s infinite; display: none; text-align: left; display: flex; align-items: center; gap: 8px; }
+  .rec-dot { width: 10px; height: 10px; background: #dc2626; border-radius: 50%; display: inline-block; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  
+  #live-transcript { background: #f8fafc; padding: 20px; border-radius: 6px; font-size: 15px; color: #475569; min-height: 120px; text-align: left; border: 1px solid #cbd5e1; margin-bottom: 20px; line-height: 1.6; }
+  .tip-text { font-size: 13px; color: #64748b; margin-top: -10px; margin-bottom: 20px; font-style: italic; text-align: left; }
+  
+  .mic-bars { display: flex; align-items: flex-end; justify-content: flex-start; gap: 4px; height: 40px; margin-bottom: 16px; display: none; }
+  .mic-bar { width: 6px; background: #2563eb; border-radius: 3px; transition: height 0.1s; height: 4px; }
+  
   .hidden { display: none !important; }
-  .mic-icon { font-size: 48px; margin-bottom: 14px; }
-  .step-badge { display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; letter-spacing: .03em; }
-  .progress-bar-wrap { width: 100%; height: 6px; background: #e2e8f0; border-radius: 6px; margin-bottom: 18px; overflow: hidden; }
-  .progress-bar { height: 100%; background: linear-gradient(90deg, #4f46e5, #3b82f6); border-radius: 6px; transition: width 0.4s ease; }
-  .mic-bars { display: flex; align-items: flex-end; justify-content: center; gap: 4px; height: 30px; margin-bottom: 12px; }
-  .mic-bar { width: 6px; background: #6366f1; border-radius: 3px; transition: height 0.1s; height: 4px; }
+
+  /* --- BLOCKER UI --- */
+  #screen-mobile-block { border-top-color: #dc2626; }
+  #screen-browser-block { border-top-color: #ea580c; }
+  .stop-icon { font-size: 48px; margin-bottom: 16px; }
 </style>
 </head>
 <body>
 
-<div class="container" id="screen-login">
-  <div class="step-badge">STEP 1 OF 4</div>
+<div class="container hidden" id="screen-mobile-block">
+  <div class="stop-icon">✋</div>
+  <h1 style="color: #dc2626;">Access Restricted</h1>
+  <p>Mobile phones and tablets are strictly prohibited for this assessment.</p>
+  <div class="info-box" style="background: #fef2f2; border-color: #fecaca; color: #991b1b; text-align: center;">
+    Please log in using your dedicated <b>Windows or Mac computer</b>.
+  </div>
+</div>
+
+<div class="container hidden" id="screen-browser-block">
+  <div class="stop-icon">⚠️</div>
+  <h1 style="color: #ea580c;">Browser Not Supported</h1>
+  <p>This assessment requires advanced vocal transcription technology that is not supported by your current browser.</p>
+  <div class="info-box" style="background: #fff7ed; border-color: #ffedd5; color: #9a3412; text-align: center;">
+    Please copy the link and open it using <b>Google Chrome</b> or <b>Microsoft Edge</b>.
+  </div>
+</div>
+
+<div class="container hidden" id="screen-login">
+  <div class="step-badge">Assessment Authentication</div>
   <h1>Candidate Login</h1>
-  <p>Enter the credentials provided to you by the recruitment team.</p>
+  <p>Enter the secure credentials provided by the recruitment team.</p>
   <input type="text" id="login-name" placeholder="Full Name (Exactly as provided)" autocomplete="off">
   <input type="text" id="login-code" placeholder="6-Digit Access Code" autocomplete="off" onkeydown="if(event.key==='Enter')verifyLogin()">
-  <button class="btn" id="login-btn" onclick="verifyLogin()">Access Interview Portal</button>
+  <button class="btn" id="login-btn" onclick="verifyLogin()">Authenticate Session</button>
   <div id="login-error" class="error-msg"></div>
 </div>
 
 <div class="container hidden" id="screen-mic">
-  <div class="step-badge">STEP 2 OF 4</div>
-  <div class="mic-icon">🎙️</div>
-  <h1>Microphone Access Required</h1>
-  <div class="info-box"><b>Why we need this:</b> Your spoken answers are transcribed automatically. Without microphone access, the interview cannot proceed.</div>
-  <p>Click the button below. Your browser will show a permission popup — click <b>"Allow"</b>.</p>
-  <button class="btn" id="mic-btn" onclick="requestMicPermission()">🎙️ &nbsp;Grant Microphone Access</button>
+  <div class="step-badge">System Calibration</div>
+  <div style="font-size: 48px; margin-bottom: 16px;">🎙️</div>
+  <h1>Audio Calibration Required</h1>
+  <div class="info-box"><b>Security Notice:</b> This assessment uses advanced vocal transcription. A functioning microphone is strictly required to proceed.</div>
+  <p>Click the button below and select <b>"Allow"</b> when prompted by your browser.</p>
+  <button class="btn" id="mic-btn" onclick="requestMicPermission()">Initialize Microphone</button>
   <div id="mic-error" class="error-msg" style="margin-top:12px;"></div>
 </div>
 
 <div class="container hidden" id="screen-welcome">
-  <div class="step-badge">STEP 3 OF 4</div>
-  <h1>Welcome, <span id="display-name" style="color:#4f46e5;"></span>!</h1>
-  <div class="info-box" style="margin-bottom:14px;">✅ Microphone connected and ready.</div>
-  <p style="text-align:left; margin-bottom:10px;">Before you begin, please note:</p>
-  <ol style="text-align:left; margin-bottom:22px; color:#475569; font-size:14px; line-height:1.8; padding-left:22px;">
-    <li>Use <b>ONLY Google Chrome</b> on a desktop or laptop.</li>
-    <li>Make sure you are in a <b>quiet place</b>.</li>
-    <li>Speak clearly and take your time.</li>
-    <li><b>Elaborate on your answers.</b> One-sentence answers will result in a lower score.</li>
-    <li>You cannot pause or resume this interview later.</li>
-  </ol>
-  <button class="btn" onclick="startInterview()">I am ready. Start Interview →</button>
+  <div class="step-badge">Pre-Assessment Verification</div>
+  <h1 style="text-align: left;">Welcome, <span id="display-name" style="color:#2563eb;"></span></h1>
+  <p style="text-align: left;">Before initializing the interview sequence, you must confirm your testing environment and understand the rules below.</p>
+  
+  <div class="checklist-group">
+    <div class="checklist-title">Required Compliance Checklist</div>
+    <label class="check-label">
+      <input type="checkbox" class="req-check" onchange="validateChecklist()"> 
+      <span>I am using <b>Google Chrome or Microsoft Edge</b> on a desktop or laptop.</span>
+    </label>
+    <label class="check-label">
+      <input type="checkbox" class="req-check" onchange="validateChecklist()"> 
+      <span>I have a USB/Noise-Canceling headset and I am in a quiet room.</span>
+    </label>
+    <label class="check-label">
+      <input type="checkbox" class="req-check" onchange="validateChecklist()"> 
+      <span>I will <b>speak clearly and take my time</b> during the assessment.</span>
+    </label>
+    <label class="check-label">
+      <input type="checkbox" class="req-check" onchange="validateChecklist()"> 
+      <span>I will <b>elaborate on my answers.</b> One-sentence answers will result in a lower score.</span>
+    </label>
+    <label class="check-label">
+      <input type="checkbox" class="req-check" onchange="validateChecklist()"> 
+      <span>I understand that I <b>cannot pause or resume</b> this interview later once I click start.</span>
+    </label>
+  </div>
+
+  <button class="btn" id="start-btn" onclick="startInterview()" disabled>Start Assessment</button>
 </div>
 
 <div class="container hidden" id="screen-interview">
-  <div class="step-badge" id="progress-text">STEP 4 OF 4 — Question 1 of 5</div>
+  <div class="step-badge" id="progress-text" style="float: left;">Question 1 of 5</div>
+  <div style="clear:both;"></div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:20%"></div></div>
+  
   <div id="question-box">Loading question...</div>
-  <div id="recording-status">🔴 Recording... Please speak your answer.</div>
-  <div class="mic-bars" id="mic-bars" style="display:none;">
-    <div class="mic-bar" id="mb1"></div><div class="mic-bar" id="mb2"></div><div class="mic-bar" id="mb3"></div><div class="mic-bar" id="mb4"></div><div class="mic-bar" id="mb5"></div>
+  
+  <div id="recording-status"><span class="rec-dot"></span> Capturing Audio...</div>
+  <div class="mic-bars" id="mic-bars">
+    <div class="mic-bar" id="mb1"></div><div class="mic-bar" id="mb2"></div><div class="mic-bar" id="mb3"></div><div class="mic-bar" id="mb4"></div><div class="mic-bar" id="mb5"></div><div class="mic-bar" id="mb6"></div><div class="mic-bar" id="mb7"></div>
   </div>
+  
   <div id="live-transcript">Your answer will appear here as you speak...</div>
-  <p class="tip-text">💡 Aim to speak for at least 1–2 minutes per question.</p>
+  <p class="tip-text">💡 Provide a detailed response. Aim for at least 1–2 minutes of speaking time.</p>
+  
   <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question →</button>
 </div>
 
 <div class="container hidden" id="screen-loading">
-  <h1>Submitting...</h1>
-  <p>Please wait while we securely save your responses and run the AI evaluation. <b>Do not close this window.</b></p>
-  <div style="margin:24px auto; width:48px; height:48px; border:5px solid #e2e8f0; border-top-color:#4f46e5; border-radius:50%; animation:spin 1s linear infinite;"></div>
+  <h1>Processing Data...</h1>
+  <p>Securely saving your responses and finalizing the transcription. <br><b>Do not close this window.</b></p>
+  <div style="margin:30px auto; width:50px; height:50px; border:4px solid #e2e8f0; border-top-color:#2563eb; border-radius:50%; animation:spin 1s linear infinite;"></div>
   <style>@keyframes spin{to{transform:rotate(360deg);}}</style>
 </div>
 
 <div class="container hidden" id="screen-done">
-  <div style="font-size:52px; margin-bottom:14px;">🎉</div>
-  <h1>Thank You!</h1>
-  <p>Your interview is complete! Our recruitment team will review your responses and reach out via email.</p>
-  <p style="font-size:13px; color:#94a3b8;">You may now close this window.</p>
+  <div style="font-size:52px; margin-bottom:16px;">✅</div>
+  <h1>Assessment Complete</h1>
+  <p>Your audio and transcripts have been successfully recorded and submitted for evaluation.</p>
+  <div class="info-box" style="text-align: center;">Our recruitment team will review your file and contact you via email with the next steps.</div>
+  <p style="font-size:13px; color:#64748b;">This session has ended. You may now close this window.</p>
 </div>
 
 <script>
 // =========================================================
-// YOUR GOOGLE WEB APP URL:
+// YOUR GOOGLE WEB APP URL (Do not change this):
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzb8pgylRXQCFw48fWGzqiqN3eQQPtH0K5nBcSyd-LZpfxNpwEGVwJ0b6dr0TYxqNX/exec";
 // =========================================================
 
-// MASTER QUESTION POOL (16 Questions)
+// --- DEVICE & BROWSER DETECTION ---
+window.onload = function() {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+  
+  const isSpeechSupported = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
+
+  if (isMobile) {
+    show('screen-mobile-block');
+  } else if (!isSpeechSupported) {
+    show('screen-browser-block');
+  } else {
+    show('screen-login');
+  }
+};
+
+// MASTER QUESTION POOL
 const allQuestions = [
   "Can you tell me a little about yourself and your previous work experience?",
   "Why are you interested in working with our company?",
@@ -125,7 +231,7 @@ const allQuestions = [
 
 let questions = []; 
 let currentQIndex = 0, applicantName = '', applicantCode = '', fullTranscript = '';
-let currentAnswer = '', currentInterim = ''; // Added currentInterim for live speed
+let currentAnswer = '', currentInterim = ''; 
 let recognition = null, micStream = null, isRecognitionRunning = false, animInterval = null;
 
 function verifyLogin() {
@@ -140,7 +246,7 @@ function verifyLogin() {
   }
 
   const btn = document.getElementById('login-btn');
-  btn.disabled = true; btn.innerText = 'Verifying...';
+  btn.disabled = true; btn.innerText = 'Authenticating...';
 
   fetch(SCRIPT_URL, {
     method: 'POST',
@@ -150,27 +256,22 @@ function verifyLogin() {
   .then(res => {
     if (res.success) {
       document.getElementById('display-name').innerText = applicantName;
-      show('screen-mic'); hide('screen-login');
+      hide('screen-login'); show('screen-mic'); 
     } else {
       errBox.innerText = res.message; errBox.style.display = 'block';
-      btn.disabled = false; btn.innerText = 'Access Interview Portal';
+      btn.disabled = false; btn.innerText = 'Authenticate Session';
     }
   })
   .catch(err => {
     errBox.innerText = 'Connection error. Please check the URL or try again.';
-    errBox.style.display = 'block'; btn.disabled = false; btn.innerText = 'Access Interview Portal';
+    errBox.style.display = 'block'; btn.disabled = false; btn.innerText = 'Authenticate Session';
   });
 }
 
 function requestMicPermission() {
   const btn = document.getElementById('mic-btn');
   const errBox = document.getElementById('mic-error');
-  errBox.style.display = 'none'; btn.disabled = true; btn.innerText = '⏳ Waiting for permission...';
-
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    errBox.innerText = '❌ Speech recognition is not supported in this browser. Please use Google Chrome.';
-    errBox.style.display = 'block'; btn.disabled = false; btn.innerText = '🎙️ Grant Microphone Access'; return;
-  }
+  errBox.style.display = 'none'; btn.disabled = true; btn.innerText = 'Waiting for permission...';
 
   navigator.mediaDevices.getUserMedia({ audio: true, video: false })
     .then(stream => {
@@ -179,14 +280,27 @@ function requestMicPermission() {
       hide('screen-mic'); show('screen-welcome');
     })
     .catch(err => {
-      btn.disabled = false; btn.innerText = '🎙️ Grant Microphone Access';
-      errBox.innerHTML = '❌ <b>Microphone access denied or not found.</b> Check your browser permissions.';
+      btn.disabled = false; btn.innerText = 'Initialize Microphone';
+      errBox.innerHTML = '<b>Microphone access denied or not found.</b> Check your browser permissions in the URL bar.';
       errBox.style.display = 'block';
     });
 }
 
+function validateChecklist() {
+  const checks = document.querySelectorAll('.req-check');
+  const startBtn = document.getElementById('start-btn');
+  let allChecked = true;
+  checks.forEach(c => { if (!c.checked) allChecked = false; });
+  startBtn.disabled = !allChecked;
+}
+
 function startInterview() {
-  questions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 5);
+  // ICE BREAKER LOGIC: Pull the 1st question, shuffle the rest, and pick 4.
+  const iceBreaker = allQuestions[0]; 
+  const remainingQuestions = allQuestions.slice(1);
+  const randomFour = remainingQuestions.sort(() => 0.5 - Math.random()).slice(0, 4);
+  questions = [iceBreaker, ...randomFour];
+  
   fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'burn', name: applicantName, code: applicantCode }) });
   hide('screen-welcome'); 
   show('screen-interview'); 
@@ -197,26 +311,24 @@ function initSpeechRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
   recognition.continuous = true;
-  recognition.interimResults = true; // Allows live capturing
+  recognition.interimResults = true; 
   recognition.lang = 'en-PH';
 
   recognition.onstart = () => isRecognitionRunning = true;
   
   recognition.onresult = (event) => {
     let finalChunk = '';
-    currentInterim = ''; // Reset interim on every update
+    currentInterim = ''; 
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
       if (event.results[i].isFinal) {
         finalChunk += event.results[i][0].transcript + ' ';
       } else {
-        currentInterim += event.results[i][0].transcript; // Capture live text
+        currentInterim += event.results[i][0].transcript; 
       }
     }
     
     currentAnswer += finalChunk;
-    
-    // Show both finalized text AND instant live text so there is no visual lag
     document.getElementById('live-transcript').innerText = currentAnswer + currentInterim || 'Listening...';
   };
 
@@ -224,7 +336,7 @@ function initSpeechRecognition() {
     isRecognitionRunning = false;
     if (event.error === 'no-speech') { restartRecognition(); return; }
     if (event.error === 'aborted') return;
-    document.getElementById('live-transcript').innerText = '⚠️ Mic error: ' + event.error;
+    document.getElementById('live-transcript').innerText = 'System Warning: Microphone error detected (' + event.error + ').';
   };
 
   recognition.onend = () => {
@@ -240,31 +352,31 @@ function restartRecognition() {
 
 function showQuestion() {
   currentAnswer = ''; 
-  currentInterim = ''; // Clear everything for the new question
-  document.getElementById('live-transcript').innerText = 'Listening... speak your answer.';
+  currentInterim = ''; 
+  document.getElementById('live-transcript').innerText = 'Initializing audio capture... please speak.';
   
   const total = questions.length; const qNum = currentQIndex + 1;
-  document.getElementById('progress-text').innerText = 'STEP 4 OF 4 — Question ' + qNum + ' of ' + total;
+  document.getElementById('progress-text').innerText = 'Question ' + qNum + ' of ' + total;
   document.getElementById('progress-bar').style.width = Math.round((qNum / total) * 100) + '%';
   document.getElementById('question-box').innerText = questions[currentQIndex];
-  document.getElementById('next-btn').innerText = currentQIndex === total - 1 ? '✓ Submit Interview' : 'Next Question →';
-  document.getElementById('recording-status').style.display = 'block';
+  document.getElementById('next-btn').innerText = currentQIndex === total - 1 ? 'Finalize & Submit Assessment' : 'Next Question →';
+  document.getElementById('recording-status').style.display = 'flex';
   document.getElementById('mic-bars').style.display = 'flex';
   
-  startMicAnimation(); restartRecognition();
+  startMicAnimation();
+  if (!isRecognitionRunning) restartRecognition();
 }
 
 function nextQuestion() {
-  // Combine finalized text + whatever live text was captured right before clicking Next
   let finalSubmission = (currentAnswer + currentInterim).trim();
 
   if (finalSubmission.length < 5) {
-    alert('We couldn\'t detect any spoken audio. Please speak clearly into the mic.'); return;
+    alert('System failed to detect spoken audio. Please speak clearly into your headset before proceeding.'); return;
   }
   
   stopMicAnimation();
-  try { recognition.abort(); } catch(e) {}
-  isRecognitionRunning = false;
+  
+  // NOTE: We no longer turn off the mic here! It stays on to prevent the annoying popups.
   document.getElementById('recording-status').style.display = 'none';
   document.getElementById('mic-bars').style.display = 'none';
 
@@ -273,12 +385,13 @@ function nextQuestion() {
   currentQIndex++;
 
   if (currentQIndex < questions.length) {
-    document.getElementById('live-transcript').innerText = 'Next question loading...';
+    document.getElementById('live-transcript').innerText = 'Loading next parameter...';
     setTimeout(showQuestion, 1200);
   } else finishInterview();
 }
 
 function finishInterview() {
+  try { recognition.abort(); } catch(e) {} // NOW we safely shut it down at the very end
   hide('screen-interview'); show('screen-loading');
   if (micStream) micStream.getTracks().forEach(t => t.stop());
 
@@ -297,14 +410,14 @@ function finishInterview() {
 }
 
 function startMicAnimation() {
-  const bars = ['mb1','mb2','mb3','mb4','mb5'];
+  const bars = ['mb1','mb2','mb3','mb4','mb5','mb6','mb7'];
   animInterval = setInterval(() => {
-    bars.forEach(id => document.getElementById(id).style.height = (Math.floor(Math.random() * 24) + 4) + 'px');
-  }, 120);
+    bars.forEach(id => document.getElementById(id).style.height = (Math.floor(Math.random() * 32) + 4) + 'px');
+  }, 100);
 }
 function stopMicAnimation() {
   if (animInterval) { clearInterval(animInterval); animInterval = null; }
-  ['mb1','mb2','mb3','mb4','mb5'].forEach(id => document.getElementById(id).style.height = '4px');
+  ['mb1','mb2','mb3','mb4','mb5','mb6','mb7'].forEach(id => document.getElementById(id).style.height = '4px');
 }
 
 function show(id) { document.getElementById(id).classList.remove('hidden'); }

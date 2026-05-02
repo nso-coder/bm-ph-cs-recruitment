@@ -16,8 +16,6 @@
   .btn { background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); color: white; border: none; padding: 15px 24px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(79,70,229,0.3); font-family: 'DM Sans', sans-serif; }
   .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79,70,229,0.4); }
   .btn:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
-  .btn-secondary { background: #f1f5f9; color: #475569; box-shadow: none; border: 2px solid #e2e8f0; margin-top: 10px; }
-  .btn-secondary:hover:not(:disabled) { background: #e2e8f0; box-shadow: none; transform: none; }
   .error-msg { color: #ef4444; font-size: 13px; font-weight: 600; margin-top: 8px; display: none; background: #fef2f2; padding: 10px 14px; border-radius: 8px; border: 1px solid #fecaca; text-align: left; }
   .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-align: left; font-size: 14px; color: #1d4ed8; line-height: 1.6; }
   .warn-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-align: left; font-size: 14px; color: #92400e; line-height: 1.6; }
@@ -31,14 +29,12 @@
   .step-badge { display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; letter-spacing: .03em; }
   .progress-bar-wrap { width: 100%; height: 6px; background: #e2e8f0; border-radius: 6px; margin-bottom: 18px; overflow: hidden; }
   .progress-bar { height: 100%; background: linear-gradient(90deg, #4f46e5, #3b82f6); border-radius: 6px; transition: width 0.4s ease; }
-  /* Mic level visualizer */
   .mic-bars { display: flex; align-items: flex-end; justify-content: center; gap: 4px; height: 30px; margin-bottom: 12px; }
   .mic-bar { width: 6px; background: #6366f1; border-radius: 3px; transition: height 0.1s; height: 4px; }
 </style>
 </head>
 <body>
 
-<!-- SCREEN 1: LOGIN -->
 <div class="container" id="screen-login">
   <div class="step-badge">STEP 1 OF 4</div>
   <h1>Candidate Login</h1>
@@ -49,61 +45,44 @@
   <div id="login-error" class="error-msg"></div>
 </div>
 
-<!-- SCREEN 2: MICROPHONE PERMISSION (NEW) -->
 <div class="container hidden" id="screen-mic">
   <div class="step-badge">STEP 2 OF 4</div>
   <div class="mic-icon">🎙️</div>
   <h1>Microphone Access Required</h1>
-  <div class="info-box">
-    <b>Why we need this:</b> This is a voice interview. Your spoken answers are transcribed automatically. Without microphone access, the interview cannot proceed.
-  </div>
+  <div class="info-box"><b>Why we need this:</b> Your spoken answers are transcribed automatically. Without microphone access, the interview cannot proceed.</div>
   <p>Click the button below. Your browser will show a permission popup — click <b>"Allow"</b>.</p>
-  <div class="warn-box">
-    ⚠️ <b>Using Google Chrome?</b> If you see a microphone icon (🎙️) in the address bar, click it and select <b>Allow</b>. Then click the button below again.
-  </div>
-  <button class="btn" id="mic-btn" onclick="requestMicPermission()">
-    🎙️ &nbsp;Grant Microphone Access
-  </button>
+  <button class="btn" id="mic-btn" onclick="requestMicPermission()">🎙️ &nbsp;Grant Microphone Access</button>
   <div id="mic-error" class="error-msg" style="margin-top:12px;"></div>
 </div>
 
-<!-- SCREEN 3: WELCOME / INSTRUCTIONS -->
 <div class="container hidden" id="screen-welcome">
   <div class="step-badge">STEP 3 OF 4</div>
   <h1>Welcome, <span id="display-name" style="color:#4f46e5;"></span>!</h1>
-  <div class="info-box" style="margin-bottom:14px;">
-    ✅ Microphone connected and ready.
-  </div>
-  <p style="text-align:left; margin-bottom:10px;">This is an automated audio interview. Before you begin, please note:</p>
+  <div class="info-box" style="margin-bottom:14px;">✅ Microphone connected and ready.</div>
+  <p style="text-align:left; margin-bottom:10px;">Before you begin, please note:</p>
   <ol style="text-align:left; margin-bottom:22px; color:#475569; font-size:14px; line-height:1.8; padding-left:22px;">
     <li>Use <b>ONLY Google Chrome</b> on a desktop or laptop.</li>
-    <li>Make sure you are in a <b>quiet place</b> with no background noise.</li>
-    <li>Speak clearly and take your time with each answer.</li>
-    <li><b>Elaborate on your answers.</b> Provide specific examples. One-sentence answers will result in a lower score.</li>
-    <li>Ensure you are fully ready before clicking <b>"Start."</b> You cannot pause or resume this interview later.</li>
+    <li>Make sure you are in a <b>quiet place</b>.</li>
+    <li>Speak clearly and take your time.</li>
+    <li><b>Elaborate on your answers.</b> One-sentence answers will result in a lower score.</li>
+    <li>You cannot pause or resume this interview later.</li>
   </ol>
   <button class="btn" onclick="startInterview()">I am ready. Start Interview →</button>
 </div>
 
-<!-- SCREEN 4: INTERVIEW -->
 <div class="container hidden" id="screen-interview">
   <div class="step-badge" id="progress-text">STEP 4 OF 4 — Question 1 of 5</div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:20%"></div></div>
   <div id="question-box">Loading question...</div>
   <div id="recording-status">🔴 Recording... Please speak your answer.</div>
   <div class="mic-bars" id="mic-bars" style="display:none;">
-    <div class="mic-bar" id="mb1"></div>
-    <div class="mic-bar" id="mb2"></div>
-    <div class="mic-bar" id="mb3"></div>
-    <div class="mic-bar" id="mb4"></div>
-    <div class="mic-bar" id="mb5"></div>
+    <div class="mic-bar" id="mb1"></div><div class="mic-bar" id="mb2"></div><div class="mic-bar" id="mb3"></div><div class="mic-bar" id="mb4"></div><div class="mic-bar" id="mb5"></div>
   </div>
   <div id="live-transcript">Your answer will appear here as you speak...</div>
-  <p class="tip-text">💡 Aim to speak for at least 1–2 minutes per question for the best score.</p>
+  <p class="tip-text">💡 Aim to speak for at least 1–2 minutes per question.</p>
   <button class="btn" id="next-btn" onclick="nextQuestion()">Next Question →</button>
 </div>
 
-<!-- SCREEN 5: LOADING -->
 <div class="container hidden" id="screen-loading">
   <h1>Submitting...</h1>
   <p>Please wait while we securely save your responses and run the AI evaluation. <b>Do not close this window.</b></p>
@@ -111,16 +90,19 @@
   <style>@keyframes spin{to{transform:rotate(360deg);}}</style>
 </div>
 
-<!-- SCREEN 6: DONE -->
 <div class="container hidden" id="screen-done">
   <div style="font-size:52px; margin-bottom:14px;">🎉</div>
   <h1>Thank You!</h1>
-  <p>Your interview is complete! Our recruitment team will review your responses and reach out via email with the next steps to schedule your final interview.</p>
+  <p>Your interview is complete! Our recruitment team will review your responses and reach out via email.</p>
   <p style="font-size:13px; color:#94a3b8;">You may now close this window.</p>
 </div>
 
 <script>
-// ── Questions ───────────────────────────────────────────────────
+// =========================================================
+// YOUR GOOGLE WEB APP URL:
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzb8pgylRXQCFw48fWGzqiqN3eQQPtH0K5nBcSyd-LZpfxNpwEGVwJ0b6dr0TYxqNX/exec";
+// =========================================================
+
 const questions = [
   "Can you tell me a little about yourself and your previous work experience? Please highlight your specific daily responsibilities and any customer-facing roles you've had.",
   "How do you handle a difficult or upset customer? Please share a specific example from your past experience and explain exactly what you said to calm them down.",
@@ -129,221 +111,126 @@ const questions = [
   "What motivates you to do well in a customer service role, and why specifically do you want to work with BM PH CS?"
 ];
 
-// ── State ───────────────────────────────────────────────────────
-let currentQIndex  = 0;
-let applicantName  = '';
-let applicantCode  = '';
-let fullTranscript = '';
-let currentAnswer  = '';
-let recognition    = null;
-let micStream      = null;  // holds the getUserMedia stream (keeps permission alive)
-let isRecognitionRunning = false;
-let animInterval   = null;
+let currentQIndex = 0, applicantName = '', applicantCode = '', fullTranscript = '', currentAnswer = '';
+let recognition = null, micStream = null, isRecognitionRunning = false, animInterval = null;
 
-// ── SCREEN 1: LOGIN ─────────────────────────────────────────────
 function verifyLogin() {
   applicantName = document.getElementById('login-name').value.trim();
   applicantCode = document.getElementById('login-code').value.trim();
-  var errBox = document.getElementById('login-error');
+  const errBox = document.getElementById('login-error');
   errBox.style.display = 'none';
 
   if (!applicantName || !applicantCode) {
     errBox.innerText = 'Please enter both your Full Name and Access Code.';
-    errBox.style.display = 'block';
-    return;
+    errBox.style.display = 'block'; return;
   }
 
-  var btn = document.getElementById('login-btn');
-  btn.disabled = true;
-  btn.innerText = 'Verifying...';
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.innerText = 'Verifying...';
 
-const API_URL = "https://script.google.com/macros/s/AKfycby3F4661o3Cz6uemOleoD2OFPyBLn-8YcM0Sx_NWNi8IJ2WUtEZ1D4-XUzF_N-1tpxR/exec";
+  // API Call to Google Script
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'validate', name: applicantName, code: applicantCode })
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) {
+      document.getElementById('display-name').innerText = applicantName;
+      show('screen-mic'); hide('screen-login');
+    } else {
+      errBox.innerText = res.message; errBox.style.display = 'block';
+      btn.disabled = false; btn.innerText = 'Access Interview Portal';
+    }
+  })
+  .catch(err => {
+    errBox.innerText = 'Connection error. Please check the URL or try again.';
+    errBox.style.display = 'block'; btn.disabled = false; btn.innerText = 'Access Interview Portal';
+  });
+}
 
-// Inside verifyLogin():
-fetch(API_URL, {
-  method: 'POST',
-  body: JSON.stringify({ 
-    functionName: 'validateCandidate', 
-    name: applicantName, 
-    code: applicantCode 
-  }),
-  headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-})
-.then(res => res.json())
-.then(res => {
-  if (res.success) {
-    document.getElementById('display-name').innerText = applicantName;
-    show('screen-mic');
-    hide('screen-login');
-  } else {
-    errBox.innerText = res.message;
-    errBox.style.display = 'block';
-    btn.disabled = false;
-    btn.innerText = 'Access Interview Portal';
-  }
-})
-.catch(err => {
-  errBox.innerText = 'Connection error. Please check your internet.';
-  btn.disabled = false;
-});
-
-// ── SCREEN 2: MICROPHONE PERMISSION ────────────────────────────
-/**
- * KEY FIX: We call getUserMedia() explicitly to trigger the browser
- * permission prompt BEFORE initialising SpeechRecognition.
- * This also keeps the MediaStream alive, which prevents Chrome from
- * cutting off the mic mid-interview.
- */
 function requestMicPermission() {
-  var btn    = document.getElementById('mic-btn');
-  var errBox = document.getElementById('mic-error');
-  errBox.style.display = 'none';
-  btn.disabled = true;
-  btn.innerText = '⏳  Waiting for permission...';
+  const btn = document.getElementById('mic-btn');
+  const errBox = document.getElementById('mic-error');
+  errBox.style.display = 'none'; btn.disabled = true; btn.innerText = '⏳ Waiting for permission...';
 
-  // Step 1: Check if SpeechRecognition is supported at all
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    errBox.innerText = '❌ Speech recognition is not supported in this browser. Please open this page in Google Chrome on a desktop.';
-    errBox.style.display = 'block';
-    btn.disabled = false;
-    btn.innerText = '🎙️  Grant Microphone Access';
-    return;
+    errBox.innerText = '❌ Speech recognition is not supported in this browser. Please use Google Chrome.';
+    errBox.style.display = 'block'; btn.disabled = false; btn.innerText = '🎙️ Grant Microphone Access'; return;
   }
 
-  // Step 2: Request mic via getUserMedia — this triggers the native browser prompt
   navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    .then(function(stream) {
-      // Keep the stream alive so the mic stays "in use" — this prevents
-      // Chrome from silently cutting SpeechRecognition when idle
+    .then(stream => {
       micStream = stream;
-
-      // Step 3: Now initialise SpeechRecognition (mic is already granted)
       initSpeechRecognition();
-
-      // Step 4: Move to welcome screen
-      hide('screen-mic');
-      show('screen-welcome');
+      hide('screen-mic'); show('screen-welcome');
     })
-    .catch(function(err) {
-      btn.disabled = false;
-      btn.innerText = '🎙️  Grant Microphone Access';
-
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        errBox.innerHTML =
-          '❌ <b>Microphone access was denied.</b><br><br>' +
-          'To fix this in Chrome:<br>' +
-          '1. Click the 🔒 or 🎙️ icon in the browser address bar.<br>' +
-          '2. Find "Microphone" and set it to <b>Allow</b>.<br>' +
-          '3. Refresh this page and try again.';
-      } else if (err.name === 'NotFoundError') {
-        errBox.innerHTML = '❌ <b>No microphone found.</b> Please connect a microphone and try again.';
-      } else {
-        errBox.innerHTML = '❌ Could not access microphone: ' + err.message + '<br>Please try again or use a different browser.';
-      }
+    .catch(err => {
+      btn.disabled = false; btn.innerText = '🎙️ Grant Microphone Access';
+      errBox.innerHTML = '❌ <b>Microphone access denied or not found.</b> Check your browser permissions.';
       errBox.style.display = 'block';
     });
 }
 
-// ── SCREEN 3: WELCOME ───────────────────────────────────────────
 function startInterview() {
-  // Burn the code via API
-  fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify({ 
-      functionName: 'burnAccessCode', 
-      name: applicantName, 
-      code: applicantCode 
-    }),
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-  });
-
-  hide('screen-welcome');
-  show('screen-interview');
-  showQuestion();
+  // API Call to burn the code
+  fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'burn', name: applicantName, code: applicantCode }) });
+  hide('screen-welcome'); show('screen-interview'); showQuestion();
 }
 
-// ── SCREEN 4: INTERVIEW ─────────────────────────────────────────
 function initSpeechRecognition() {
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
-  recognition.continuous     = true;
+  recognition.continuous = true;
   recognition.interimResults = true;
-  recognition.lang           = 'en-PH';  // Filipino English accent
+  recognition.lang = 'en-PH';
 
-  recognition.onstart = function() {
-    isRecognitionRunning = true;
-  };
-
-  recognition.onresult = function(event) {
-    var finalChunk = '';
-    for (var i = event.resultIndex; i < event.results.length; i++) {
-      if (event.results[i].isFinal) {
-        finalChunk += event.results[i][0].transcript + ' ';
-      }
+  recognition.onstart = () => isRecognitionRunning = true;
+  
+  recognition.onresult = (event) => {
+    let finalChunk = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) finalChunk += event.results[i][0].transcript + ' ';
     }
     currentAnswer += finalChunk;
     document.getElementById('live-transcript').innerText = currentAnswer || 'Listening...';
   };
 
-  recognition.onerror = function(event) {
+  recognition.onerror = (event) => {
     isRecognitionRunning = false;
-    // 'no-speech' is normal — just restart quietly
-    if (event.error === 'no-speech') {
-      restartRecognition();
-      return;
-    }
-    // 'aborted' means we stopped it intentionally — ignore
+    if (event.error === 'no-speech') { restartRecognition(); return; }
     if (event.error === 'aborted') return;
-
-    // Any other error (not-allowed, network, etc.) — show a message
-    document.getElementById('live-transcript').innerText =
-      '⚠️ Mic error: ' + event.error + '. Please check your microphone and refresh the page.';
+    document.getElementById('live-transcript').innerText = '⚠️ Mic error: ' + event.error;
   };
 
-  recognition.onend = function() {
+  recognition.onend = () => {
     isRecognitionRunning = false;
-    // Auto-restart if we're still in the interview screen
-    if (!document.getElementById('screen-interview').classList.contains('hidden')) {
-      restartRecognition();
-    }
+    if (!document.getElementById('screen-interview').classList.contains('hidden')) restartRecognition();
   };
 }
 
 function restartRecognition() {
-  if (isRecognitionRunning) return;  // already running
-  try {
-    recognition.start();
-  } catch(e) {
-    // InvalidStateError = already started, safe to ignore
-  }
+  if (isRecognitionRunning) return;
+  try { recognition.start(); } catch(e) {}
 }
 
 function showQuestion() {
-  currentAnswer = '';
-  document.getElementById('live-transcript').innerText = 'Listening... speak your answer.';
-
-  var total = questions.length;
-  var qNum  = currentQIndex + 1;
+  currentAnswer = ''; document.getElementById('live-transcript').innerText = 'Listening... speak your answer.';
+  const total = questions.length; const qNum = currentQIndex + 1;
   document.getElementById('progress-text').innerText = 'STEP 4 OF 4 — Question ' + qNum + ' of ' + total;
   document.getElementById('progress-bar').style.width = Math.round((qNum / total) * 100) + '%';
   document.getElementById('question-box').innerText = questions[currentQIndex];
-  document.getElementById('next-btn').innerText = currentQIndex === total - 1 ? '✓  Submit Interview' : 'Next Question →';
-
+  document.getElementById('next-btn').innerText = currentQIndex === total - 1 ? '✓ Submit Interview' : 'Next Question →';
   document.getElementById('recording-status').style.display = 'block';
   document.getElementById('mic-bars').style.display = 'flex';
-  startMicAnimation();
-
-  restartRecognition();
+  startMicAnimation(); restartRecognition();
 }
 
 function nextQuestion() {
   if (currentAnswer.trim().length < 5) {
-    alert('We couldn\'t detect any spoken audio.\n\nPlease make sure:\n• Your microphone is plugged in and not muted\n• You have allowed microphone access\n• You are speaking clearly into the mic\n\nThen try again.');
-    return;
+    alert('We couldn\'t detect any spoken audio. Please speak clearly into the mic.'); return;
   }
-
   stopMicAnimation();
-
   try { recognition.abort(); } catch(e) {}
   isRecognitionRunning = false;
   document.getElementById('recording-status').style.display = 'none';
@@ -356,57 +243,39 @@ function nextQuestion() {
   if (currentQIndex < questions.length) {
     document.getElementById('live-transcript').innerText = 'Next question loading...';
     setTimeout(showQuestion, 1200);
-  } else {
-    finishInterview();
-  }
+  } else finishInterview();
 }
 
 function finishInterview() {
-  hide('screen-interview');
-  show('screen-loading');
+  hide('screen-interview'); show('screen-loading');
+  if (micStream) micStream.getTracks().forEach(t => t.stop());
 
-  if (micStream) {
-    micStream.getTracks().forEach(track => track.stop());
-  }
-
-  fetch(API_URL, {
+  // API Call to evaluate
+  fetch(SCRIPT_URL, {
     method: 'POST',
-    body: JSON.stringify({ 
-      functionName: 'processEvaluation', 
-      name: applicantName, 
-      transcript: fullTranscript 
-    }),
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+    body: JSON.stringify({ action: 'evaluate', name: applicantName, transcript: fullTranscript })
   })
-  .then(() => {
-    hide('screen-loading');
-    show('screen-done');
+  .then(res => res.json())
+  .then(res => {
+    hide('screen-loading'); show('screen-done');
   })
   .catch(err => {
-    hide('screen-loading');
-    show('screen-done'); 
+    hide('screen-loading'); show('screen-done');
     console.error('Submission error:', err);
   });
 }
 
-// ── Mic visualizer animation ────────────────────────────────────
 function startMicAnimation() {
-  var bars = ['mb1','mb2','mb3','mb4','mb5'];
-  animInterval = setInterval(function() {
-    bars.forEach(function(id) {
-      var h = Math.floor(Math.random() * 24) + 4;
-      document.getElementById(id).style.height = h + 'px';
-    });
+  const bars = ['mb1','mb2','mb3','mb4','mb5'];
+  animInterval = setInterval(() => {
+    bars.forEach(id => document.getElementById(id).style.height = (Math.floor(Math.random() * 24) + 4) + 'px');
   }, 120);
 }
 function stopMicAnimation() {
   if (animInterval) { clearInterval(animInterval); animInterval = null; }
-  ['mb1','mb2','mb3','mb4','mb5'].forEach(function(id) {
-    document.getElementById(id).style.height = '4px';
-  });
+  ['mb1','mb2','mb3','mb4','mb5'].forEach(id => document.getElementById(id).style.height = '4px');
 }
 
-// ── Helpers ─────────────────────────────────────────────────────
 function show(id) { document.getElementById(id).classList.remove('hidden'); }
 function hide(id) { document.getElementById(id).classList.add('hidden'); }
 </script>

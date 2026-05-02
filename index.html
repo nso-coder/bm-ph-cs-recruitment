@@ -157,27 +157,35 @@ function verifyLogin() {
   btn.disabled = true;
   btn.innerText = 'Verifying...';
 
-  google.script.run
-    .withSuccessHandler(function(res) {
-      if (res.success) {
-        document.getElementById('display-name').innerText = applicantName;
-        show('screen-mic');
-        hide('screen-login');
-      } else {
-        errBox.innerText = res.message;
-        errBox.style.display = 'block';
-        btn.disabled = false;
-        btn.innerText = 'Access Interview Portal';
-      }
-    })
-    .withFailureHandler(function(err) {
-      errBox.innerText = 'Connection error. Please refresh and try again.';
-      errBox.style.display = 'block';
-      btn.disabled = false;
-      btn.innerText = 'Access Interview Portal';
-    })
-    .validateCandidate(applicantName, applicantCode);
-}
+const API_URL = "https://script.google.com/macros/s/AKfycby3F4661o3Cz6uemOleoD2OFPyBLn-8YcM0Sx_NWNi8IJ2WUtEZ1D4-XUzF_N-1tpxR/exec";
+
+// Inside verifyLogin():
+fetch(API_URL, {
+  method: 'POST',
+  body: JSON.stringify({ 
+    functionName: 'validateCandidate', 
+    name: applicantName, 
+    code: applicantCode 
+  }),
+  headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+})
+.then(res => res.json())
+.then(res => {
+  if (res.success) {
+    document.getElementById('display-name').innerText = applicantName;
+    show('screen-mic');
+    hide('screen-login');
+  } else {
+    errBox.innerText = res.message;
+    errBox.style.display = 'block';
+    btn.disabled = false;
+    btn.innerText = 'Access Interview Portal';
+  }
+})
+.catch(err => {
+  errBox.innerText = 'Connection error. Please check your internet.';
+  btn.disabled = false;
+});
 
 // ── SCREEN 2: MICROPHONE PERMISSION ────────────────────────────
 /**
@@ -238,8 +246,16 @@ function requestMicPermission() {
 
 // ── SCREEN 3: WELCOME ───────────────────────────────────────────
 function startInterview() {
-  // Burn the code so they can't refresh and re-enter
-  google.script.run.burnAccessCode(applicantName, applicantCode);
+  // Burn the code via API
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({ 
+      functionName: 'burnAccessCode', 
+      name: applicantName, 
+      code: applicantCode 
+    }),
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  });
 
   hide('screen-welcome');
   show('screen-interview');
@@ -349,22 +365,28 @@ function finishInterview() {
   hide('screen-interview');
   show('screen-loading');
 
-  // Release the mic stream now that we're done recording
   if (micStream) {
-    micStream.getTracks().forEach(function(t) { t.stop(); });
+    micStream.getTracks().forEach(track => track.stop());
   }
 
-  google.script.run
-    .withSuccessHandler(function() {
-      hide('screen-loading');
-      show('screen-done');
-    })
-    .withFailureHandler(function(err) {
-      hide('screen-loading');
-      show('screen-done'); // Show done anyway — submission may have partially worked
-      console.error('Submission error:', err);
-    })
-    .processEvaluation(applicantName, fullTranscript);
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({ 
+      functionName: 'processEvaluation', 
+      name: applicantName, 
+      transcript: fullTranscript 
+    }),
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  })
+  .then(() => {
+    hide('screen-loading');
+    show('screen-done');
+  })
+  .catch(err => {
+    hide('screen-loading');
+    show('screen-done'); 
+    console.error('Submission error:', err);
+  });
 }
 
 // ── Mic visualizer animation ────────────────────────────────────

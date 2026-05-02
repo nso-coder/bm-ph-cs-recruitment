@@ -123,8 +123,9 @@ const allQuestions = [
   "Where do you see yourself in the next 1–2 years, and how does this role fit into your goals?"
 ];
 
-let questions = []; // This will hold the 5 randomly selected questions
-let currentQIndex = 0, applicantName = '', applicantCode = '', fullTranscript = '', currentAnswer = '';
+let questions = []; 
+let currentQIndex = 0, applicantName = '', applicantCode = '', fullTranscript = '';
+let currentAnswer = '', currentInterim = ''; // Added currentInterim for live speed
 let recognition = null, micStream = null, isRecognitionRunning = false, animInterval = null;
 
 function verifyLogin() {
@@ -141,7 +142,6 @@ function verifyLogin() {
   const btn = document.getElementById('login-btn');
   btn.disabled = true; btn.innerText = 'Verifying...';
 
-  // API Call to Google Script
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({ action: 'validate', name: applicantName, code: applicantCode })
@@ -186,12 +186,8 @@ function requestMicPermission() {
 }
 
 function startInterview() {
-  // Randomly shuffle the master list and pick the first 5 questions
   questions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 5);
-
-  // API Call to burn the code
   fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'burn', name: applicantName, code: applicantCode }) });
-  
   hide('screen-welcome'); 
   show('screen-interview'); 
   showQuestion();
@@ -201,18 +197,27 @@ function initSpeechRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
   recognition.continuous = true;
-  recognition.interimResults = true;
+  recognition.interimResults = true; // Allows live capturing
   recognition.lang = 'en-PH';
 
   recognition.onstart = () => isRecognitionRunning = true;
   
   recognition.onresult = (event) => {
     let finalChunk = '';
+    currentInterim = ''; // Reset interim on every update
+
     for (let i = event.resultIndex; i < event.results.length; i++) {
-      if (event.results[i].isFinal) finalChunk += event.results[i][0].transcript + ' ';
+      if (event.results[i].isFinal) {
+        finalChunk += event.results[i][0].transcript + ' ';
+      } else {
+        currentInterim += event.results[i][0].transcript; // Capture live text
+      }
     }
+    
     currentAnswer += finalChunk;
-    document.getElementById('live-transcript').innerText = currentAnswer || 'Listening...';
+    
+    // Show both finalized text AND instant live text so there is no visual lag
+    document.getElementById('live-transcript').innerText = currentAnswer + currentInterim || 'Listening...';
   };
 
   recognition.onerror = (event) => {
@@ -234,7 +239,10 @@ function restartRecognition() {
 }
 
 function showQuestion() {
-  currentAnswer = ''; document.getElementById('live-transcript').innerText = 'Listening... speak your answer.';
+  currentAnswer = ''; 
+  currentInterim = ''; // Clear everything for the new question
+  document.getElementById('live-transcript').innerText = 'Listening... speak your answer.';
+  
   const total = questions.length; const qNum = currentQIndex + 1;
   document.getElementById('progress-text').innerText = 'STEP 4 OF 4 — Question ' + qNum + ' of ' + total;
   document.getElementById('progress-bar').style.width = Math.round((qNum / total) * 100) + '%';
@@ -242,13 +250,18 @@ function showQuestion() {
   document.getElementById('next-btn').innerText = currentQIndex === total - 1 ? '✓ Submit Interview' : 'Next Question →';
   document.getElementById('recording-status').style.display = 'block';
   document.getElementById('mic-bars').style.display = 'flex';
+  
   startMicAnimation(); restartRecognition();
 }
 
 function nextQuestion() {
-  if (currentAnswer.trim().length < 5) {
+  // Combine finalized text + whatever live text was captured right before clicking Next
+  let finalSubmission = (currentAnswer + currentInterim).trim();
+
+  if (finalSubmission.length < 5) {
     alert('We couldn\'t detect any spoken audio. Please speak clearly into the mic.'); return;
   }
+  
   stopMicAnimation();
   try { recognition.abort(); } catch(e) {}
   isRecognitionRunning = false;
@@ -256,7 +269,7 @@ function nextQuestion() {
   document.getElementById('mic-bars').style.display = 'none';
 
   fullTranscript += 'Interviewer: ' + questions[currentQIndex] + '\n';
-  fullTranscript += 'Applicant: ' + currentAnswer.trim() + '\n\n';
+  fullTranscript += 'Applicant: ' + finalSubmission + '\n\n';
   currentQIndex++;
 
   if (currentQIndex < questions.length) {
@@ -269,7 +282,6 @@ function finishInterview() {
   hide('screen-interview'); show('screen-loading');
   if (micStream) micStream.getTracks().forEach(t => t.stop());
 
-  // API Call to evaluate
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({ action: 'evaluate', name: applicantName, transcript: fullTranscript })

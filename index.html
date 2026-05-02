@@ -103,14 +103,27 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzb8pgylRXQCFw48fWGzqiqN3eQQPtH0K5nBcSyd-LZpfxNpwEGVwJ0b6dr0TYxqNX/exec";
 // =========================================================
 
-const questions = [
-  "Can you tell me a little about yourself and your previous work experience? Please highlight your specific daily responsibilities and any customer-facing roles you've had.",
-  "How do you handle a difficult or upset customer? Please share a specific example from your past experience and explain exactly what you said to calm them down.",
-  "If you don't know the answer to a customer's question, what steps would you take? Walk me through your entire process for finding the right information.",
-  "Tell me about a time you had to juggle multiple tasks or customers at once. How did you decide what to prioritize first, and what was the outcome?",
-  "What motivates you to do well in a customer service role, and why specifically do you want to work with BM PH CS?"
+// MASTER QUESTION POOL (16 Questions)
+const allQuestions = [
+  "Can you tell me a little about yourself and your previous work experience?",
+  "Why are you interested in working with our company?",
+  "How do you handle a difficult or upset customer? Can you share an example from your past experience?",
+  "If you don't know the answer to a customer's question, what steps would you take?",
+  "How do you make sure customers feel valued during a call or chat?",
+  "Can you give an example of when your communication skills helped resolve an issue?",
+  "Tell me about a time you had to juggle multiple tasks or customers at once. How did you prioritize?",
+  "What would you do if you noticed a recurring issue being reported by multiple restaurants?",
+  "Tell me about a time when you had to follow strict procedures at work. How did you make sure you stayed compliant?",
+  "How do you keep yourself motivated during repetitive or high-volume tasks?",
+  "Are you familiar with using CRM systems (like Salesforce) or ticketing tools? If so, which ones?",
+  "How comfortable are you navigating multiple systems or chat windows while on a live call?",
+  "Have you ever used Slack, Zoom, or similar communication platforms?",
+  "Customer support can sometimes feel stressful—how do you handle stress at work?",
+  "What motivates you to do well in a customer service role?",
+  "Where do you see yourself in the next 1–2 years, and how does this role fit into your goals?"
 ];
 
+let questions = []; // This will hold the 5 randomly selected questions
 let currentQIndex = 0, applicantName = '', applicantCode = '', fullTranscript = '', currentAnswer = '';
 let recognition = null, micStream = null, isRecognitionRunning = false, animInterval = null;
 
@@ -173,9 +186,15 @@ function requestMicPermission() {
 }
 
 function startInterview() {
+  // Randomly shuffle the master list and pick the first 5 questions
+  questions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 5);
+
   // API Call to burn the code
   fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'burn', name: applicantName, code: applicantCode }) });
-  hide('screen-welcome'); show('screen-interview'); showQuestion();
+  
+  hide('screen-welcome'); 
+  show('screen-interview'); 
+  showQuestion();
 }
 
 function initSpeechRecognition() {

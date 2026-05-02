@@ -233,6 +233,7 @@ let questions = [];
 let currentQIndex = 0, applicantName = '', applicantCode = '', fullTranscript = '';
 let currentAnswer = '', currentInterim = ''; 
 let recognition = null, micStream = null, isRecognitionRunning = false, animInterval = null;
+let isTransitioning = false; // Prevents the AI from booting up during question changes
 
 function verifyLogin() {
   applicantName = document.getElementById('login-name').value.trim();
@@ -295,7 +296,6 @@ function validateChecklist() {
 }
 
 function startInterview() {
-  // ICE BREAKER LOGIC: Pull the 1st question, shuffle the rest, and pick 4.
   const iceBreaker = allQuestions[0]; 
   const remainingQuestions = allQuestions.slice(1);
   const randomFour = remainingQuestions.sort(() => 0.5 - Math.random()).slice(0, 4);
@@ -334,14 +334,20 @@ function initSpeechRecognition() {
 
   recognition.onerror = (event) => {
     isRecognitionRunning = false;
-    if (event.error === 'no-speech') { restartRecognition(); return; }
+    if (event.error === 'no-speech') { 
+      if(!isTransitioning) restartRecognition(); 
+      return; 
+    }
     if (event.error === 'aborted') return;
     document.getElementById('live-transcript').innerText = 'System Warning: Microphone error detected (' + event.error + ').';
   };
 
   recognition.onend = () => {
     isRecognitionRunning = false;
-    if (!document.getElementById('screen-interview').classList.contains('hidden')) restartRecognition();
+    // Only automatically restart if we aren't purposely transitioning to the next question
+    if (!document.getElementById('screen-interview').classList.contains('hidden') && !isTransitioning) {
+      restartRecognition();
+    }
   };
 }
 
@@ -351,6 +357,7 @@ function restartRecognition() {
 }
 
 function showQuestion() {
+  isTransitioning = false; // Unlock the AI
   currentAnswer = ''; 
   currentInterim = ''; 
   document.getElementById('live-transcript').innerText = 'Initializing audio capture... please speak.';
@@ -363,8 +370,8 @@ function showQuestion() {
   document.getElementById('recording-status').style.display = 'flex';
   document.getElementById('mic-bars').style.display = 'flex';
   
-  startMicAnimation();
-  if (!isRecognitionRunning) restartRecognition();
+  startMicAnimation(); 
+  restartRecognition(); // Boot AI with fresh memory
 }
 
 function nextQuestion() {
@@ -376,7 +383,11 @@ function nextQuestion() {
   
   stopMicAnimation();
   
-  // NOTE: We no longer turn off the mic here! It stays on to prevent the annoying popups.
+  // LOCK THE AI AND WIPE MEMORY
+  isTransitioning = true;
+  try { recognition.abort(); } catch(e) {}
+  isRecognitionRunning = false;
+
   document.getElementById('recording-status').style.display = 'none';
   document.getElementById('mic-bars').style.display = 'none';
 
@@ -391,7 +402,8 @@ function nextQuestion() {
 }
 
 function finishInterview() {
-  try { recognition.abort(); } catch(e) {} // NOW we safely shut it down at the very end
+  isTransitioning = true;
+  try { recognition.abort(); } catch(e) {} 
   hide('screen-interview'); show('screen-loading');
   if (micStream) micStream.getTracks().forEach(t => t.stop());
 
